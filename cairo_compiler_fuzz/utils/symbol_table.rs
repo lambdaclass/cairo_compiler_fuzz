@@ -1,26 +1,94 @@
 use std::iter::Map;
+use crate::ASTnode::CairoCode;
 
+enum Statement {
+    ExpressionStatement,
+    Declaration,
+    ConstDeclaration,
+}
+
+struct ExpressionStatement {
+    symbol_table: SymbolTable,
+    expression: Expression,
+    add_semicolon: bool,
+}
+
+impl CairoCode for ExpressionStatement{}
+
+struct Declaration {
+    mutable: bool,
+    variable_name: String,
+    variable_type: Type,
+    add_semicolon: bool,
+    value: Expression,
+    symbol_table: SymbolTable,
+}
+
+impl CairoCode for Declaration{}
+
+struct ConstDeclaration {
+    symbol_table: SymbolTable,
+    variable_name: String,
+    variable_type: Type,
+    value: Expression,
+}
+
+impl CairoCode for ConstDeclaration{}
+
+enum Expression {
+    LiteralExpression,
+    LHSAssignmentNode,
+    VoidLiteral,
+
+}
+
+enum LiteralExpression {
+    CLIArgumentAccessExpression,
+    Int8Literal,
+    Int16Literal,
+    Int32Literal,
+    Int64Literal,
+    Int128Literal,
+    UInt8Literal,
+    UInt16Literal,
+    UInt32Literal,
+    UInt64Literal,
+    UInt128Literal,
+    USizeLiteral,
+    Float32Literal,
+    Float64Literal,
+    StringLiteral,
+    BooleanLiteral,
+    TupleLiteral,
+    
+}
+
+struct StatementBlock {
+    statements: List<Statement>,
+    symbol_table: SymbolTable,
+}
+
+impl CairoCode for StatementBlock {
+    fn to_cairo() -> String{
+        
+        let mut final_statement = self.statements
+            .iter()
+            .map(|stmt| {stmt.to_cairo()} )
+            .map(|stmt| {stmt.join("\n")})
+            .collect();
+
+    }
+}
 
 struct FunctionDefinition {
     return_type: Type,
     function_name: String,
     arguments: Map<String, Type>,
     body: StatementBlock,
-    force_no_inline: bool,
-    add_self_variable: bool,
 }
 
-impl ToCairo for FunctionDefinition {
-    fn to_rust() -> String{
-        let inline = if self.force_no_inline (forceNoInline) {
-            "#[inline(never)]"
-        } else 
-        { "" };
-
-        let body = if (self.add_self_variable) {
-            "&self,"
-        } else 
-        { "" };
+impl CairoCode for FunctionDefinition {
+    fn to_cairo() -> String{
 
         // this has to convert the list of arguments to cairo arguments for the header of a function
         let cairo_arguments = self.arguments.map();

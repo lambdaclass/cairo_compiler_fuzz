@@ -5,10 +5,9 @@ use std::thread;
 use rand::Rng;
 use std::collections::HashMap;
 
-const TYPE_PREFIX: &str = "Type";
-const CONST_PREFIX: &str = "const";
-const VARIABLE_PREFIX: &str = "tempvar";
-const FUNCTION_PREFIX: &str = "func";
+const VARIABLE_PREFIX: &str = "let";
+const MUT_VARIABLE_PREFIX: &str = "let mut";
+const FUNCTION_PREFIX: &str = "fn";
 const STRUCT_PREFIX: &str = "struct";
 
 struct IdentGenerator {
