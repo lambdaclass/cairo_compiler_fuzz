@@ -13,18 +13,38 @@ struct ExpressionStatement {
     add_semicolon: bool,
 }
 
-impl CairoCode for ExpressionStatement{}
+impl CairoCode for ExpressionStatement{
+    fn to_cairo() -> String{
+        if self.add_semicolon {
+            format!("{self.expression.to_cairo()} ; ").to_string()
+        } else {
+            self.expression.to_cairo()
+        }
+    }
+}
 
 struct Declaration {
     mutable: bool,
     variable_name: String,
     variable_type: Type,
-    add_semicolon: bool,
     value: Expression,
     symbol_table: SymbolTable,
 }
 
-impl CairoCode for Declaration{}
+impl CairoCode for Declaration{
+    fn to_cairo() -> String{
+        let mutability = if self.mutable {
+            "mut"
+        } else {
+            ""
+        }; 
+
+        format!("let {mutability} {self.variable_name}: 
+            {self.variable_type.to_cairo()} = 
+            {self.value.to_cairo()} ; ")
+            .to_string()
+    }
+}
 
 struct ConstDeclaration {
     symbol_table: SymbolTable,
@@ -60,7 +80,7 @@ enum LiteralExpression {
     StringLiteral,
     BooleanLiteral,
     TupleLiteral,
-    
+
 }
 
 struct StatementBlock {
@@ -76,7 +96,7 @@ impl CairoCode for StatementBlock {
             .map(|stmt| {stmt.to_cairo()} )
             .map(|stmt| {stmt.join("\n")})
             .collect();
-
+        final_statement
     }
 }
 
