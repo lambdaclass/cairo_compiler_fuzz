@@ -4,9 +4,12 @@ use clap::error::Error;
 use std::thread;
 use rand::Rng;
 use std::collections::HashMap;
+use symbol_table::FunctionSymbolTable;
+
 
 const VARIABLE_PREFIX: &str = "let";
 const MUT_VARIABLE_PREFIX: &str = "let mut";
+const CONST_PREFIX: &str = "const";
 const FUNCTION_PREFIX: &str = "fn";
 const STRUCT_PREFIX: &str = "struct";
 
@@ -27,10 +30,6 @@ impl IdentGenerator {
 
     fn generate_const(&mut self) -> String {
         self.generate(CONST_PREFIX)
-    }
-
-    fn generate_type_alias(&mut self) -> String {
-        self.generate(TYPE_PREFIX)
     }
 
     fn generate_function_name(&mut self) -> String {

@@ -1,5 +1,7 @@
 pub(crate) trait CairoCode {
-    fn to_cairo() -> String{}
+    fn to_cairo(&mut self) -> String{
+        "".to_string()
+    }
 }
 
 #[macro_export]
