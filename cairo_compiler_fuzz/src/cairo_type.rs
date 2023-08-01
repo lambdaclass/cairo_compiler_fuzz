@@ -1,16 +1,16 @@
-use crate::ASTnode::CairoCode;
-use std::collections::LinkedList;
+use crate::astnode::CairoCode;
 
-pub(crate) trait CairoType {
-    fn member_types(&mut self) -> LinkedList<Type>{
-        LinkedList::new()
+pub(crate) trait CairoType<T>  {
+    fn member_types(&mut self) -> Vec<T>{
+        Vec::new()
     }
 
-    fn life_time_parameters(&mut self) -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Type {
     U8Type,
     U16Type,
@@ -29,7 +29,23 @@ pub enum Type {
     VoidType,
 }
 
-struct U8Type;
+impl CairoCode for Type {
+    fn to_cairo(&mut self) -> String{
+        self.to_cairo()
+    }
+}
+
+impl CairoType<Type> for Type {
+    fn member_types(&mut self) -> Vec<Type>{
+        self.member_types()
+    }
+
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        self.life_time_parameters()
+    }
+}
+
+pub struct U8Type;
 
 impl CairoCode for U8Type {
     fn to_cairo(&mut self) -> String{
@@ -37,18 +53,18 @@ impl CairoCode for U8Type {
     }
 }
 
-impl CairoType for U8Type {
-    fn member_types() -> LinkedList<U8Type>{
-        let list: LinkedList<U8Type> = LinkedList::new();
+impl CairoType<U8Type> for U8Type {
+    fn member_types(&mut self) -> Vec<U8Type>{
+        let list: Vec<U8Type> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-struct U16Type;
+pub struct U16Type;
 
 impl CairoCode for U16Type {
     fn to_cairo(&mut self) -> String{
@@ -56,18 +72,18 @@ impl CairoCode for U16Type {
     }
 }
 
-impl CairoType for U16Type {
-    fn member_types() -> LinkedList<U16Type>{
-        let list: LinkedList<U16Type> = LinkedList::new();
+impl CairoType<U16Type> for U16Type {
+    fn member_types(&mut self) -> Vec<U16Type>{
+        let list: Vec<U16Type> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-struct U32Type;
+pub struct U32Type;
 
 impl CairoCode for U32Type {
     fn to_cairo(&mut self) -> String{
@@ -75,18 +91,18 @@ impl CairoCode for U32Type {
     }
 }
 
-impl CairoType for U32Type {
-    fn member_types(&mut self) -> LinkedList<U32Type>{
-        let list: LinkedList<U32Type> = LinkedList::new();
+impl CairoType<U32Type> for U32Type {
+    fn member_types(&mut self) -> Vec<U32Type>{
+        let list: Vec<U32Type> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-struct U64Type;
+pub struct U64Type;
 
 impl CairoCode for U64Type {
     fn to_cairo(&mut self) -> String{
@@ -94,18 +110,18 @@ impl CairoCode for U64Type {
     }
 }
 
-impl CairoType for U64Type {
-    fn member_types(&mut self) -> LinkedList<U64Type>{
-        let list: LinkedList<U64Type> = LinkedList::new();
+impl CairoType<U64Type> for U64Type {
+    fn member_types(&mut self) -> Vec<U64Type>{
+        let list: Vec<U64Type> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-struct U128Type;
+pub struct U128Type;
 
 impl CairoCode for U128Type {
     fn to_cairo(&mut self) -> String{
@@ -113,18 +129,18 @@ impl CairoCode for U128Type {
     }
 }
 
-impl CairoType for U128Type {
-    fn member_types() -> LinkedList<U128Type>{
-        let list: LinkedList<U128Type> = LinkedList::new();
+impl CairoType<U128Type> for U128Type {
+    fn member_types(&mut self) -> Vec<U128Type>{
+        let list: Vec<U128Type> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-struct U256Type;
+pub struct U256Type;
 
 impl CairoCode for U256Type {
     fn to_cairo(&mut self) -> String{
@@ -132,18 +148,18 @@ impl CairoCode for U256Type {
     }
 }
 
-impl CairoType for U256Type {
-    fn member_types() -> LinkedList<U256Type>{
-        let list: LinkedList<U256Type> = LinkedList::new();
+impl CairoType<U256Type> for U256Type {
+    fn member_types(&mut self) -> Vec<U256Type>{
+        let list: Vec<U256Type> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-struct Felt252Type;
+pub struct Felt252Type;
 
 impl CairoCode for Felt252Type {
     fn to_cairo(&mut self) -> String{
@@ -151,18 +167,18 @@ impl CairoCode for Felt252Type {
     }
 }
 
-impl CairoType for Felt252Type {
-    fn member_types() -> LinkedList<Felt252Type>{
-        let list: LinkedList<Felt252Type> = LinkedList::new();
+impl CairoType<Felt252Type> for Felt252Type {
+    fn member_types(&mut self) -> Vec<Felt252Type>{
+        let list: Vec<Felt252Type> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-struct USizeType;
+pub struct USizeType;
 
 impl CairoCode for USizeType {
     fn to_cairo(&mut self) -> String{
@@ -170,18 +186,18 @@ impl CairoCode for USizeType {
     }
 }
 
-impl CairoType for USizeType {
-    fn member_types() -> LinkedList<USizeType>{
-        let list: LinkedList<USizeType> = LinkedList::new();
+impl CairoType<USizeType> for USizeType {
+    fn member_types(&mut self) -> Vec<USizeType>{
+        let list: Vec<USizeType> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-struct StringType;
+pub struct StringType;
 
 impl CairoCode for StringType {
     fn to_cairo(&mut self) -> String{
@@ -189,18 +205,18 @@ impl CairoCode for StringType {
     }
 }
 
-impl CairoType for StringType {
-    fn member_types() -> LinkedList<StringType>{
-        let list: LinkedList<StringType> = LinkedList::new();
+impl CairoType<StringType> for StringType {
+    fn member_types(&mut self) -> Vec<StringType>{
+        let list: Vec<StringType> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-struct BooleanType;
+pub struct BooleanType;
 
 impl CairoCode for BooleanType {
     fn to_cairo(&mut self) -> String{
@@ -208,26 +224,27 @@ impl CairoCode for BooleanType {
     }
 }
 
-impl CairoType for BooleanType {
-    fn member_types() -> LinkedList<BooleanType>{
-        let list: LinkedList<BooleanType> = LinkedList::new();
+impl CairoType<BooleanType> for BooleanType {
+    fn member_types(&mut self) -> Vec<BooleanType>{
+        let list: Vec<BooleanType> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
-struct TupleType {
-    types: LinkedList<Type>
+#[derive(Clone, Debug)]
+pub struct TupleType {
+    types: Vec<Type>
 }
 
 impl CairoCode for TupleType {
     fn to_cairo(&mut self) -> String{
         let cairo_types = self.types
-        .iter()
+        .clone()
+        .iter_mut()
         .map(|e| e.to_cairo())
         .collect::<Vec<_>>()
         .join(" , ");
@@ -236,103 +253,98 @@ impl CairoCode for TupleType {
     }
 }
 
-impl CairoType for TupleType {
-    fn member_types(&mut self) -> LinkedList<TupleType>{
-        let member_types = self.types
-        .iter()
-        .map(|e| e.member_types())
-        .collect();
-        
-        member_types
+impl CairoType<Type> for TupleType {
+    fn member_types(&mut self) -> Vec<Type>{
+        self.types.iter_mut().flat_map(|(t)| t.member_types()).collect()
     }
 
-    fn life_time_parameters(&mut self) -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct StructType {
+pub struct StructType {
     struct_name: String,
-    types: LinkedList<Type>,
+    types: Vec<(String, Type)>,
+}
+
+impl StructType {
+    pub fn struct_name(&mut self) -> String {
+        self.struct_name.clone()
+    }
+
+    pub fn types(&mut self) -> Vec<(String, Type)> {
+        self.types.clone()
+    }
 }
 
 impl CairoCode for StructType {
     fn to_cairo(&mut self) -> String{
-        self.struct_name
+        self.struct_name.clone()
     }
 }
 
-impl CairoType for StructType {
-    fn member_types(&mut self) -> LinkedList<Type>{
-        let member_types = self.types
-        .iter()
-        .map(|e| e.member_types())
-        .collect();
-        
-        member_types
+impl CairoType<Type> for StructType {
+    fn member_types(&mut self) -> Vec<Type>{
+        self.types.iter_mut().flat_map(|(s, t)| t.member_types()).collect()
     }
 
-    fn life_time_parameters(&mut self) -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct ArrayType {
+pub struct ArrayType {
     internal_type: Type,
     size: usize,
 }
 
 impl CairoCode for ArrayType {
     fn to_cairo(&mut self) -> String{
-        format!("Array<{}>", self.internal_type)
+        format!("Array<{}>", self.internal_type.to_cairo())
     }
 }
 
-impl CairoType for ArrayType {
-    fn member_types(&mut self) -> LinkedList<Type>{
+impl CairoType<Type> for ArrayType {
+    fn member_types(&mut self) -> Vec<Type>{
         self.internal_type.member_types()
     }
 
-    fn life_time_parameters(&mut self) -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct FunctionType {
+pub struct FunctionType {
     return_type: Type,
-    args: LinkedList<Type>,
+    args: Vec<Type>,
 }
 
 impl CairoCode for FunctionType {
     fn to_cairo(&mut self) -> String{
         let cairo_args = self.args
-        .iter()
+        .iter_mut()
         .map(|e| e.to_cairo())
-        .collect()
+        .collect::<Vec<_>>()
         .join(" , ");
 
         format!("fn({}) -> {}", cairo_args, self.return_type.to_cairo())
     }
 }
 
-impl CairoType for FunctionType {
-    fn member_types(&mut self) -> LinkedList<Type>{
-        let member_types = self.types
-        .iter()
-        .map(|e| e.member_types())
-        .collect();
-        
-        member_types
+impl CairoType<Type> for FunctionType {
+    fn member_types(&mut self) -> Vec<Type>{
+        self.args.iter_mut().flat_map(|(t)| t.member_types()).collect()
     }
 
-    fn life_time_parameters(&mut self) -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 
 }
@@ -349,14 +361,14 @@ impl CairoCode for VoidType {
     }
 }
 
-impl CairoType for VoidType {
-    fn member_types(&mut self) -> LinkedList<VoidType>{
-        let list: LinkedList<VoidType> = LinkedList::new();
+impl CairoType<VoidType> for VoidType {
+    fn member_types(&mut self) -> Vec<VoidType>{
+        let list: Vec<VoidType> = Vec::new();
         list
     }
 
-    fn life_time_parameters() -> LinkedList<u8>{
-        LinkedList::new()
+    fn life_time_parameters(&mut self) -> Vec<u8>{
+        Vec::new()
     }
 
 }

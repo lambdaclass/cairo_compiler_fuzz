@@ -1,8 +1,11 @@
 use std::{iter::Map, collections::LinkedList};
+use std::collections::{HashMap, HashSet};
 
-use crate::ASTnode::CairoCode;
-use crate::cairo_type::Type;
-enum Statement {
+use crate::astnode::{CairoCode, StructDefinition};
+use crate::cairo_type::{Type, TupleType, ArrayType};
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum Statement {
     ExpressionStatement,
     Declaration,
     ConstDeclaration,
@@ -100,14 +103,14 @@ impl CairoCode for LHSAssignmentNode {
     }
 }
 
-struct Variable {
+pub struct Variable {
     value: String,
     simbol_table: SymbolTable,
 }
 
 impl CairoCode for Variable {
     fn to_cairo(&mut self) -> String{
-       self.value
+       self.value.clone()
     }
 }
 
@@ -258,7 +261,7 @@ struct TupleLiteral{
 impl CairoCode for TupleLiteral {
     fn to_cairo(&mut self) -> String{
         let mut tuple_string = self.value
-        .iter()
+        .iter_mut()
         .map(|e| e.to_cairo())
         .collect::<Vec<_>>()
         .join(" , ");
@@ -267,7 +270,8 @@ impl CairoCode for TupleLiteral {
     }
 }
 
-struct StatementBlock {
+#[derive(Clone, Debug)]
+pub struct StatementBlock {
     statements: LinkedList<Statement>,
     symbol_table: SymbolTable,
 }
@@ -276,7 +280,7 @@ impl CairoCode for StatementBlock {
     fn to_cairo(&mut self) -> String{
         
         let mut final_statement = self.statements
-            .iter()
+            .iter_mut()
             .map(|stmt| {stmt.to_cairo()} )
             .collect::<Vec<_>>()
             .join("\n");
@@ -284,10 +288,11 @@ impl CairoCode for StatementBlock {
     }
 }
 
-struct FunctionDefinition {
+#[derive(Clone, Debug)]
+pub struct FunctionDefinition {
     return_type: Type,
     function_name: String,
-    arguments: Map<String, Type>,
+    arguments: Vec<(String, Type)>,
     body: StatementBlock,
 }
 
@@ -295,15 +300,34 @@ impl CairoCode for FunctionDefinition {
     fn to_cairo(&mut self) -> String{
 
         // this has to convert the list of arguments to cairo arguments for the header of a function
-        let cairo_arguments = self.arguments.map();
-        let cairo_return = self.return_type.to_cairo(&mut self);
-        let cairo_body = self.body.to_cairo(&mut self);
-        let cairo_content = format!("{inline}\nfunc {self.function_name}({
-        cairo_arguments}) -> {cairo_return} {\n{cairo_body}\n}\n");
+        let cairo_arguments = self.arguments
+            .iter_mut()
+            .map(|(s, t)| format!("{}: {}",s, t.to_cairo()))
+            .collect::<Vec<_>>()
+            .join(" ,");
+
+        let cairo_return = self.return_type.to_cairo();
+        let cairo_body = self.body.to_cairo();
+        let cairo_content = 
+            format!("func {}({}) -> {} {{\n{}\n}}\n", 
+            self.function_name, 
+            cairo_arguments, 
+            cairo_return,
+            cairo_body);
+
         cairo_content
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct IdentifierData {
+    identifier_type: Type,
+    mutable: bool,
+    depth: usize,
+    constant: bool,
+}
+
+#[derive(Clone, Debug)]
 pub struct SymbolTable {
     parent: Option<Box<SymbolTable>>,
     function_symbol_table: FunctionSymbolTable,
@@ -311,8 +335,47 @@ pub struct SymbolTable {
     symbol_map: HashMap<String, IdentifierData>,
 }
 
+impl SymbolTable{
+    pub fn new(function_symbol_table: FunctionSymbolTable,  global_symbol_table: GlobalSymbolTable) -> Self {
+        SymbolTable {
+            parent: None,
+            function_symbol_table: function_symbol_table,
+            global_symbol_table: global_symbol_table,
+            symbol_map: HashMap::new(),
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
 pub struct FunctionSymbolTable {
-    symbol_map: Map<String, IdentifierData>,
-    functions: LinkedList<FunctionDefinition>,
+    symbol_map: HashMap<String, IdentifierData>,
+    functions: Vec<FunctionDefinition>,
+}
+
+impl FunctionSymbolTable{
+    pub fn new() -> Self {
+        FunctionSymbolTable {
+            symbol_map: HashMap::new(),
+            functions: Vec::new(),
+        }
+    }
+}
+#[derive(Clone, Debug)]
+pub struct GlobalSymbolTable {
+    symbol_map: HashMap<String, IdentifierData>,
+    structs: HashSet<StructDefinition>,
+    tuple_types: HashSet<TupleType>,
+    array_types: HashSet<ArrayType>,
+}
+
+impl GlobalSymbolTable{
+    pub fn new() -> Self {
+        GlobalSymbolTable {
+            symbol_map: HashMap::new(),
+            structs: HashSet::new(),
+            tuple_types: HashSet::new(),
+            array_types: HashSet::new(),
+        }
+    }
 }
 

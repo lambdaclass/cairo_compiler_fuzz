@@ -1,52 +1,25 @@
 use clap::{Parser, ValueHint};
-use std::io::{self, Write};
+use std::{io::{self, Write}, collections::LinkedList};
 use clap::error::Error;
 use std::thread;
 use rand::Rng;
 use std::collections::HashMap;
-use symbol_table::FunctionSymbolTable;
-
+use cairo_compiler_fuzz::symbol_table::{
+    FunctionSymbolTable, 
+    GlobalSymbolTable, 
+    FunctionDefinition,
+    SymbolTable,
+    StatementBlock
+};
+use cairo_compiler_fuzz::astnode::ASTGenerator;
+use cairo_compiler_fuzz::context::Context;
+use cairo_compiler_fuzz::ident_generator::IdentGenerator;
 
 const VARIABLE_PREFIX: &str = "let";
 const MUT_VARIABLE_PREFIX: &str = "let mut";
 const CONST_PREFIX: &str = "const";
 const FUNCTION_PREFIX: &str = "fn";
 const STRUCT_PREFIX: &str = "struct";
-
-struct IdentGenerator {
-    prefix_map: HashMap<String, i32>,
-}
-
-impl IdentGenerator {
-    fn new() -> IdentGenerator {
-        IdentGenerator {
-            prefix_map: HashMap::new(),
-        }
-    }
-
-    fn generate_variable(&mut self) -> String {
-        self.generate(VARIABLE_PREFIX)
-    }
-
-    fn generate_const(&mut self) -> String {
-        self.generate(CONST_PREFIX)
-    }
-
-    fn generate_function_name(&mut self) -> String {
-        self.generate(FUNCTION_PREFIX)
-    }
-
-    fn generate_struct_name(&mut self) -> String {
-        self.generate(STRUCT_PREFIX)
-    }
-
-    fn generate(&mut self, prefix: &str) -> String {
-        let count = self.prefix_map.entry(prefix.to_string()).or_insert(0);
-        *count += 1;
-        format!("{}{}", prefix, count)
-    }
-}
-
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -128,19 +101,20 @@ impl ProgressBarBuilder {
 // }
 
 fn generate_program(seed: u64, ident_generator: IdentGenerator, fail_fast: bool) -> (Program, CliArguments) {
-    let funtion_symbol_table = FunctionSymbolTable::new();
+    let mut rng = rand::thread_rng();
+    let function_symbol_table = FunctionSymbolTable::new();
     let global_symbol_table = GlobalSymbolTable::new();
     let symbol_table = SymbolTable::new(function_symbol_table,  global_symbol_table);
     let ast_generator = ASTGenerator::new(symbol_table, fail_fast, ident_generator);
-    let main_function_context = Context("main", symbol_table);
-    let number_of_constants = CustomRandom.nextInt(10);
+    let mut main_function_context = Context::default(Vec::new(), "main".to_string(), LinkedList::new(), symbol_table);
+    let number_of_constants = rng.gen_range(0..=9);
     let mut constant_declarations = Vec::new();
     for x in 0..number_of_constants {
         constant_declarations.push(ast_generator.generate_constant_declaration(main_function_context))
     }
-    let body = ast_generator(main_function_context);
-    let body_with_output =
-        StatementBlock::new(statements, symbol_table);
+    let body = ast_generator.generate(&mut main_function_context);
+    // let body_with_output =
+        StatementBlock::new(body.statements, symbol_table);
     let main_function = FunctionDefinition::new(
         "main",
         body_with_output ,
@@ -177,8 +151,6 @@ fn run(args: impl Iterator<Item = String>) -> Result<(), Error> {
         ProgressBarBuilder::new().set_task_name("Generating").set_initial_max(count as i64);
     };
 
-    // let executor = Executors.newFixedThreadPool(count.coerceAtMost(threads));
-    
     for x in 1..threads{
         thread::spawn(|| {
             let mut rng = rand::thread_rng();
