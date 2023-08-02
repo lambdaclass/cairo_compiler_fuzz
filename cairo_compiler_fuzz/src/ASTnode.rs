@@ -56,7 +56,7 @@ impl ASTGenerator{
         self.clone()
     }
 
-    pub fn generateConstantDeclaration(&mut self,ctx: Context) -> ConstDeclaration {
+    pub fn generate_constant_declaration(&mut self,ctx: Context) -> ConstDeclaration {
         let const_name = self.ident_generator.generate_const();
 
         let mut break_condition = true;
