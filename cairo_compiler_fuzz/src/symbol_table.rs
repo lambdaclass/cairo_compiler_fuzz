@@ -54,7 +54,7 @@ impl CairoCode for Declaration{
     }
 }
 
-struct ConstDeclaration {
+pub struct ConstDeclaration {
     symbol_table: SymbolTable,
     variable_name: String,
     variable_type: Type,
@@ -272,7 +272,7 @@ impl CairoCode for TupleLiteral {
 
 #[derive(Clone, Debug)]
 pub struct StatementBlock {
-    statements: LinkedList<Statement>,
+    pub statements: LinkedList<Statement>,
     symbol_table: SymbolTable,
 }
 

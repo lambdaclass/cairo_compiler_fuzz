@@ -1,5 +1,10 @@
 use crate::cairo_type::{Type, StructType};
-use crate::symbol_table::{FunctionDefinition, SymbolTable};
+use crate::symbol_table::{
+    FunctionDefinition, 
+    SymbolTable, 
+    StatementBlock,
+    ConstDeclaration
+};
 use crate::ident_generator::IdentGenerator;
 use crate::context::Context;
 
@@ -52,9 +57,12 @@ impl ASTGenerator{
     }
 
     pub fn generateConstantDeclaration(&mut self,ctx: Context) -> ConstDeclaration {
-        let const_name = self.identGenerator.generateConst();
-        while (true) {
-            val type = generateType(ctx)
+        let const_name = self.ident_generator.generate_const();
+
+        let mut break_condition = true;
+
+        while (break_condition) {
+            let const_type = generate_type(ctx)
             if (type is LiteralType && type !is StringType) {
                 symbolTable.root()[constName] = IdentifierData(type, false, OwnershipState.VALID, 0, true)
                 return ConstDeclaration(type, constName, generateLiteral(type, ctx), symbolTable)
@@ -62,6 +70,20 @@ impl ASTGenerator{
                 continue
             }
         }
+    }
+
+    pub fn generate_type(&mut self,ctx: Context) -> Type {
+        generate_specific_type(select_random_type(ctx), ctx)
+    }
+
+    pub fn generate_specific_type() {
+
+    }
+
+    pub fn select_random_type(ctx: Context) -> Type {
+        let pickRandomByWeight = selectionManager.availableTypesWeightings(ctx).pickRandomByWeight()
+        Logger.logText("Picking type: $pickRandomByWeight", ctx, Color.GREEN)
+        return pickRandomByWeight
     }
 }
 
